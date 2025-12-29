@@ -1,18 +1,67 @@
 {
-  "resources": [
+  "apiResources": [
     {
-      "type": "dataProduct",
-      "id": "dp.finance.sales",
-      "title": "Finance Sales Data Product",
-      "description": "Sample data product used for local scaffold testing.",
-      "labels": ["finance", "sales"]
-    },
+      "apiProtocol": "delta-sharing",
+      "description": "Provides Delta Sharing access to the Finance Sales dataset.",
+      "ordId": "sap.bdc:apiResource:FinanceSalesDeltaShare:v1",
+      "partOfPackage": "sap.bdc:package:Core:v1",
+      "releaseStatus": "active",
+      "shortDescription": "Delta Sharing endpoint for Finance Sales data product",
+      "title": "Finance Sales Delta Share",
+      "version": "1.0.0",
+      "visibility": "public"
+    }
+  ],
+  "dataProducts": [
     {
-      "type": "api",
-      "id": "api.finance.sales",
-      "title": "Finance Sales API",
-      "description": "Sample API resource in ORD.",
-      "labels": ["finance", "api"]
+      "category": "business-object",
+      "description": "Sample data product used for MCP server development and testing.",
+      "ordId": "sap.bdc:dataProduct:FinanceSales:v1",
+      "outputPorts": [
+        {
+          "ordId": "sap.bdc:apiResource:FinanceSalesDeltaShare:v1"
+        }
+      ],
+      "partOfPackage": "sap.bdc:package:Core:v1",
+      "releaseStatus": "active",
+      "responsible": "sap:ach:BDC-DP-01",
+      "shortDescription": "Curated finance sales facts",
+      "tags": [
+        "finance",
+        "sales"
+      ],
+      "title": "Finance Sales",
+      "type": "primary",
+      "version": "1.0.0",
+      "visibility": "public"
+    }
+  ],
+  "openResourceDiscovery": "1.13",
+  "packages": [
+    {
+      "description": "Sample package for SAP BDC MCP v0.1 tests.",
+      "ordId": "sap.bdc:package:Core:v1",
+      "partOfProducts": [
+        "sap:product:BDC:"
+      ],
+      "shortDescription": "Core BDC metadata exposure",
+      "title": "BDC Core Metadata",
+      "vendor": "sap:vendor:SAP:",
+      "version": "0.1.0"
+    }
+  ],
+  "products": [
+    {
+      "ordId": "sap:product:BDC:",
+      "shortDescription": "Unified data layer for SAP and beyond",
+      "title": "SAP Business Data Cloud",
+      "vendor": "sap:vendor:SAP:"
+    }
+  ],
+  "vendors": [
+    {
+      "ordId": "sap:vendor:SAP:",
+      "title": "SAP"
     }
   ]
 }
