@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "sap-bdc-mcp (local)": {
+      "command": ".\\.venv\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "sap_bdc_mcp"
+      ],
+      "env": {
+        "BDC_MODE": "local",
+        "BDC_MOCK_MODE": "1",
+        "BDC_ORD_SOURCES": "./fixtures/ord.sample.json",
+        "BDC_MAX_DOC_KB": "512",
+        "BDC_VERIFY_TLS": "1"
+      }
+    }
+  }
+}

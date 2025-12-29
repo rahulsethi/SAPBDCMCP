@@ -1,0 +1,18 @@
+{
+  "resources": [
+    {
+      "type": "dataProduct",
+      "id": "dp.finance.sales",
+      "title": "Finance Sales Data Product",
+      "description": "Sample data product used for local scaffold testing.",
+      "labels": ["finance", "sales"]
+    },
+    {
+      "type": "api",
+      "id": "api.finance.sales",
+      "title": "Finance Sales API",
+      "description": "Sample API resource in ORD.",
+      "labels": ["finance", "api"]
+    }
+  ]
+}
