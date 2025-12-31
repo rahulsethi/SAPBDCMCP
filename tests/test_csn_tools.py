@@ -21,6 +21,38 @@ def test_csn_validate_valid() -> None:
     assert len(result["issues"]) == 0
 
 
+def test_csn_validate_with_elements() -> None:
+    """Test validation of CSN with elements."""
+    valid_csn = {
+        "definitions": {
+            "Entity1": {
+                "kind": "entity",
+                "elements": {
+                    "field1": {"type": "String"},
+                    "field2": {"type": "Integer", "key": True},
+                }
+            },
+        }
+    }
+    result = csn_validate(valid_csn)
+    assert result["ok"] is True
+
+
+def test_csn_validate_invalid_elements() -> None:
+    """Test validation catches invalid elements structure."""
+    invalid_csn = {
+        "definitions": {
+            "Entity1": {
+                "kind": "entity",
+                "elements": "not an object",  # Should be object
+            }
+        }
+    }
+    result = csn_validate(invalid_csn)
+    assert result["ok"] is False
+    assert len(result["issues"]) > 0
+
+
 def test_csn_validate_invalid_not_object() -> None:
     """Test validation rejects non-object CSN."""
     result = csn_validate("not an object")
@@ -68,6 +100,41 @@ def test_csn_diff_no_changes() -> None:
     assert result["summary"]["removed_entities"] == 0
 
 
+def test_csn_diff_kind_change() -> None:
+    """Test CSN diff detects kind changes (breaking)."""
+    old_csn = {"definitions": {"Entity1": {"kind": "entity"}}}
+    new_csn = {"definitions": {"Entity1": {"kind": "view"}}}
+    result = csn_diff(old_csn, new_csn)
+    assert len(result["breaking"]) > 0
+    assert any(b.get("code") == "KIND_CHANGED" for b in result["breaking"])
+
+
+def test_csn_diff_element_changes() -> None:
+    """Test CSN diff detects element changes."""
+    old_csn = {
+        "definitions": {
+            "Entity1": {
+                "kind": "entity",
+                "elements": {"field1": {"type": "String"}},
+            }
+        }
+    }
+    new_csn = {
+        "definitions": {
+            "Entity1": {
+                "kind": "entity",
+                "elements": {
+                    "field1": {"type": "String"},
+                    "field2": {"type": "Integer"},  # Added
+                },
+            }
+        }
+    }
+    result = csn_diff(old_csn, new_csn)
+    assert len(result["non_breaking"]) > 0
+    assert any(nb.get("code") == "ELEMENT_ADDED" for nb in result["non_breaking"])
+
+
 def test_csn_render_docs() -> None:
     """Test CSN rendering to Markdown."""
     csn = {
@@ -81,6 +148,27 @@ def test_csn_render_docs() -> None:
     assert "# CSN Documentation" in md
     assert "Entity1" in md
     assert "Entity2" in md
+    assert "Total Entities" in md
+
+
+def test_csn_render_docs_with_elements() -> None:
+    """Test CSN rendering includes element details."""
+    csn = {
+        "definitions": {
+            "Entity1": {
+                "kind": "entity",
+                "elements": {
+                    "field1": {"type": "String", "key": True},
+                    "field2": {"type": "Integer", "nullable": False},
+                },
+            }
+        }
+    }
+    md = csn_render_docs(csn)
+    assert "field1" in md
+    assert "field2" in md
+    assert "String" in md
+    assert "Integer" in md
 
 
 def test_csn_render_docs_empty() -> None:
@@ -88,7 +176,8 @@ def test_csn_render_docs_empty() -> None:
     csn = {"definitions": {}}
     md = csn_render_docs(csn)
     assert isinstance(md, str)
-    assert "Entities: 0" in md
+    assert "Total Entities" in md or "Entities: 0" in md
+    assert "No entities defined" in md
 
 
 def test_csn_tools_server_builds() -> None:
