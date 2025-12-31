@@ -1,7 +1,7 @@
-"""Share planning tools (scaffold).
+"""Share planning tools for creating and validating share plans.
 
 File: src/sap_bdc_mcp/tools/share_tools.py
-Version: v2
+Version: v3
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def register(server: Any, config: BDCConfig) -> None:
         except Exception as e:  # noqa: BLE001
             return {"ok": False, "issues": [{"code": "INVALID_PLAN", "message": str(e)}]}
 
-        # Safety: very small limits in v0.1 scaffold
+        # Safety: very small limits in v0.1
         if len(parsed.assets) > 50:
             issues.append(
                 {
@@ -54,7 +54,32 @@ def register(server: Any, config: BDCConfig) -> None:
                     "message": "Share plan has > 50 assets; split into multiple shares.",
                 }
             )
-
-        # TODO(v0.1): tie validation to ORD/CSN constraints.
+        
+        # Validate asset structure
+        for i, asset in enumerate(parsed.assets):
+            if not asset.name or not asset.name.strip():
+                issues.append({
+                    "code": "INVALID_ASSET_NAME",
+                    "asset_index": i,
+                    "message": f"Asset at index {i} has empty or invalid name",
+                })
+            
+            # Check for duplicate assets
+            asset_key = (asset.schema_name or "", asset.name)
+            if i > 0:
+                prev_assets = [(a.schema_name or "", a.name) for a in parsed.assets[:i]]
+                if asset_key in prev_assets:
+                    issues.append({
+                        "code": "DUPLICATE_ASSET",
+                        "asset_index": i,
+                        "asset": asset.name,
+                        "message": f"Duplicate asset '{asset.name}' in share plan",
+                    })
+        
+        # Note: In a full implementation, we would validate against ORD/CSN:
+        # - Check that referenced tables/views exist in CSN
+        # - Verify access permissions from ORD data products
+        # - Validate schema/namespace consistency
+        
         ok = len(issues) == 0
         return {"ok": ok, "issues": issues}

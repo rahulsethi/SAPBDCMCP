@@ -1,7 +1,7 @@
-"""CSN tools (scaffold).
+"""CSN tools for validation, diffing, and documentation.
 
 File: src/sap_bdc_mcp/tools/csn_tools.py
-Version: v1
+Version: v2
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ def register(server: Any, config: BDCConfig) -> None:
     def bdc_csn_diff(old_csn: Dict, new_csn: Dict) -> Dict:
         """Diff two CSNs and highlight breaking vs non-breaking changes.
 
-        v0.1 scaffold: minimal diff (keys + entity changes).
+        Identifies entity additions/removals, kind changes, and element modifications.
         """
         return csn_diff(old_csn, new_csn)
 

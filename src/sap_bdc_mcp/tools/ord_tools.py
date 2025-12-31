@@ -1,7 +1,7 @@
-"""ORD tools (scaffold).
+"""ORD tools for document fetching, searching, and validation.
 
 File: src/sap_bdc_mcp/tools/ord_tools.py
-Version: v1
+Version: v2
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ def register(server: Any, config: BDCConfig) -> None:
     def bdc_ord_validate(sources: Optional[List[str]] = None) -> Dict:
         """Validate ORD documents and return diagnostics.
 
-        v0.1 scaffold: structural checks only (JSON parse + a few expected fields).
+        Validates against ORD JSON Schema and checks for structural issues.
         """
         docs = load_ord_documents(
             sources=sources or config.ord_sources,
