@@ -1,0 +1,7 @@
+# File: MANIFEST.in
+# Version: v1
+
+include README.md
+include LICENSE
+include CONTRIBUTING.md
+recursive-include src/sap_bdc_mcp/schemas *.json

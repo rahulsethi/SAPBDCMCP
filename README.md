@@ -53,6 +53,8 @@ A typical flow:
 
 ## Architecture (plugin-based, safety-first)
 
+This repository follows a **plugin-friendly** pattern inspired by the SAP Datasphere MCP server approach: core server + modular tool packs, with shared safety primitives.
+
 ### Component view
 
 ```
@@ -119,7 +121,23 @@ MCP Client (Cursor / Claude / LibreChat)
 
 ## Installation
 
+### Install from PyPI (recommended)
+```bash
+pip install sap-bdc-mcp
+```
+
+### Install from source (development)
+```bash
+git clone https://github.com/rahulsethi/SAPBDCMCP.git
+cd SAPBDCMCP
+python -m venv .venv
+# Windows (PowerShell)
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+```
+
 ### Prerequisites
+
 - Python **3.11+**
 - `pip`
 

@@ -1,16 +1,42 @@
 # File: pyproject.toml
-# Version: v2
+# Version: v3
 
 [project]
 name = "sap-bdc-mcp"
 version = "0.1.0"
-description = "Model Context Protocol (MCP) server for SAP Business Data Cloud (BDC)"
+description = "Model Context Protocol (MCP) server for SAP Business Data Cloud (BDC): contract-first, safe-by-default tooling for AI agents."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
+
 authors = [
-  { name = "Your Team" }
+  { name = "Rahul Sethi" }
 ]
+
+keywords = [
+  "mcp",
+  "sap",
+  "business-data-cloud",
+  "bdc",
+  "ord",
+  "csn",
+  "agentic",
+  "ai-tools"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
 dependencies = [
   "mcp[cli]>=1.25.0",
   "pydantic>=2.7.0",
@@ -26,10 +52,17 @@ dev = [
   "ruff>=0.6.0",
   "mypy>=1.10.0",
   "pre-commit>=3.7.0",
+  "build>=1.2.2",
+  "twine>=5.1.1",
 ]
 
 [project.scripts]
 sap-bdc-mcp = "sap_bdc_mcp.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/rahulsethi/SAPBDCMCP"
+Repository = "https://github.com/rahulsethi/SAPBDCMCP"
+Issues = "https://github.com/rahulsethi/SAPBDCMCP/issues"
 
 [tool.ruff]
 line-length = 100
@@ -40,9 +73,13 @@ testpaths = ["tests"]
 addopts = "-q"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 include-package-data = true
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Ensure JSON schemas are included in wheels
 [tool.setuptools.package-data]
 sap_bdc_mcp = ["schemas/**/*.json"]
 
