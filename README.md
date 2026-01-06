@@ -1,87 +1,146 @@
-<!-- SAP Business Data Cloud MCP Server -->
-<!-- File: README.md -->
-<!-- Version: v2 -->
+# SAP Business Data Cloud MCP Server (`sap-bdc-mcp`)
 
-# SAP Business Data Cloud MCP Server (sap-bdc-mcp)
+An **MCP (Model Context Protocol)** server that exposes **safe, well-scoped SAP Business Data Cloud (BDC)** discovery + contract tooling for AI agents (Cursor, Claude Desktop, LibreChat, etc.) — with **enterprise-first guardrails** (redaction, policy gating, bounded outputs, and read-only defaults).
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that exposes SAP Business Data Cloud (BDC) discovery and contract validation as safe, well-scoped tools for AI agents.
-
-**Version:** 0.1.0 (in progress)
-
-**Theme:** Contract-first open-core (ORD + CSN + share planning scaffolding)
+> **Release:** v0.1.0  
+> **Focus (v0.1):** contract-first *open-core* foundation — **ORD discovery**, **CSN contract checks**, and **share planning (non-executing)**.
 
 ---
 
-## Overview
+## Why this exists
 
-The SAP Business Data Cloud MCP Server provides AI agents with secure, policy-gated access to BDC capabilities including:
+Modern enterprises increasingly want **AI agents** to *act* — not just chat. But real enterprise action requires:
 
-- **ORD Discovery**: Fetch, search, and validate Open Resource Discovery documents
-- **CSN Validation**: Validate, diff, and document CSN (Common Schema Notation) contracts
-- **Share Planning**: Create and validate share plans without execution (read-only in v0.1)
-- **Core Diagnostics**: Health checks, diagnostics, and tenant information
+- controlled access to systems of record,
+- strict governance and auditability,
+- safe defaults (no accidental writes),
+- predictable, machine-readable tool contracts.
 
-All tools are designed with safety-first principles: secrets are redacted, outputs are bounded, and write operations are disabled by default.
+**MCP** provides the standard “tool bus” that lets external clients call tools safely. This project provides that tool bus specifically for **SAP Business Data Cloud** so agents can:
+
+- **discover** data products and resources (ORD),
+- **validate and diff** schema contracts (CSN),
+- **plan** data sharing contracts before execution (share plans),
+- **operate safely** (redaction + permissions + bounded outputs).
 
 ---
 
-## Features
+## Where `sap-bdc-mcp` fits in the enterprise landscape
 
-### 🔒 Safety & Security
-- **Automatic secret redaction** - Sensitive data is automatically redacted from outputs
-- **Policy gating** - READ/WRITE/ADMIN permission levels with safe defaults
-- **Bounded outputs** - Configurable limits on document sizes and result sets
-- **Mock mode** - Test and develop without live BDC connections
+In most enterprise setups, you’ll have:
 
-### 📊 ORD (Open Resource Discovery) Tools
-- Fetch ORD documents from URLs, files, or registries
-- Search across ORD resources (data products, APIs, events, etc.)
-- Validate ORD documents against JSON Schema
-- Support for ORD Configuration expansion
+- **AI clients** (Cursor, Claude Desktop, LibreChat, internal copilots)
+- **MCP servers** (tool providers) running inside a controlled network boundary
+- **SAP platforms** (BDC, Datasphere, BW, etc.)
+- **Governance** (identity, policies, approvals, logging, DLP)
 
-### 🔍 CSN (Common Schema Notation) Tools
-- Validate CSN structures for Interop compatibility
-- Diff two CSNs to identify breaking vs non-breaking changes
-- Generate comprehensive Markdown documentation from CSN
+`SAPBDCMCP` is intended to run **inside your boundary** (developer laptop, jump host, or a controlled runtime) and act as the **policy-gated integration layer** between agentic tooling and SAP BDC.
 
-### 📦 Share Planning Tools
-- Create share plan objects (no mutation in v0.1)
-- Validate share plans against safety limits and contract structure
-- Detect duplicate assets and validate asset structure
+A typical flow:
 
-### 🛠️ Core Tools
-- Health checks and diagnostics
-- Tenant information retrieval
-- Identity/user information (where supported)
+1. User asks an AI client to find / validate / plan something.
+2. The client calls MCP tools exposed by `sap-bdc-mcp`.
+3. The server enforces:
+   - output size limits,
+   - redaction of secrets,
+   - permission levels (READ/WRITE/ADMIN),
+   - “no writes by default”.
+4. Results are returned to the client in structured form.
+
+> **Important:** v0.1 focuses on *read-only* and *contract-first* operations. It does **not** execute shares or mutate BDC resources.
+
+---
+
+## Architecture (plugin-based, safety-first)
+
+### Component view
+
+```
+MCP Client (Cursor / Claude / LibreChat)
+            |
+            | stdio (v0.1)
+            v
++---------------------------+
+|  FastMCP Server           |
+|  (tool registry)          |
++------------+--------------+
+             |
+             v
++---------------------------+        +--------------------------+
+| Policy + Redaction        |        | Connectors / Parsers     |
+| - Permission gates        |------->| - ORD loader + search    |
+| - Secret redaction        |        | - JSON Schema validation |
+| - Output bounds           |        | - CSN validation + diff  |
++------------+--------------+        +--------------------------+
+             |
+             v
++---------------------------+
+| Tool Packs (v0.1)         |
+| - Core                    |
+| - ORD                     |
+| - CSN                     |
+| - Share Plan              |
++---------------------------+
+```
+
+### Design principles
+
+- **Safe defaults**: write tools are off unless explicitly enabled.
+- **Contract-first**: validate structures before “doing” anything.
+- **Composable**: tools are grouped into “packs” that can evolve independently.
+- **Enterprise-friendly**: minimal data retention, predictable behavior, and clear boundaries.
+
+---
+
+## What’s included in v0.1
+
+### Core tooling (safe diagnostics)
+- Health + wiring checks
+- Configuration diagnostics (with redaction)
+- Tenant/user “identity” introspection (mock-friendly)
+
+### ORD (Open Resource Discovery)
+- Fetch ORD documents from URLs and local files
+- Expand ORD Configuration documents (to resolve referenced documents)
+- Search resources by type (data products, APIs, events, etc.)
+- Validate documents against shipped JSON Schemas
+
+### CSN (Common Schema Notation / contract checks)
+- Validate CSN structure for interoperability / tooling assumptions
+- Diff CSNs to detect breaking vs non-breaking changes
+- Render CSN → Markdown documentation (quick contract docs)
+
+### Share planning (non-executing)
+- Build share plan objects with a stable contract shape
+- Validate share plans against safety limits (asset limits, duplicates, required fields)
+- **No execution in v0.1** (planning + validation only)
 
 ---
 
 ## Installation
 
 ### Prerequisites
-- Python 3.11 or higher
-- pip
+- Python **3.11+**
+- `pip`
 
-### Setup
-
+### Install from source (recommended for v0.1)
 ```bash
-# Clone the repository
 git clone https://github.com/rahulsethi/SAPBDCMCP.git
-cd sap-bdc-mcp
+cd SAPBDCMCP
 
-# Create virtual environment
 python -m venv .venv
 
-# Activate virtual environment
-# On Windows:
+# Windows (PowerShell)
 .\.venv\Scripts\Activate.ps1
-# On Linux/Mac:
-source .venv/bin/activate
 
-# Install package with dev dependencies
+# macOS/Linux
+# source .venv/bin/activate
+
 pip install -e ".[dev]"
+```
 
-# Copy environment template (optional)
+### Environment file (optional)
+```bash
 cp .env.example .env
 ```
 
@@ -89,70 +148,88 @@ cp .env.example .env
 
 ## Configuration
 
-Configure the server using environment variables or a `.env` file:
+The server is configured via environment variables (or a `.env` file).
 
-```bash
-# Server mode: local, dev, or prod
-BDC_MODE=local
+### Required (for v0.1)
+Nothing is strictly required — **mock mode** supports local development without a BDC tenant.
 
-# Enable mock mode (uses fixtures instead of real API calls)
-BDC_MOCK_MODE=1
+### Common settings
 
-# Verify TLS certificates
-BDC_VERIFY_TLS=1
+| Variable | Default | Purpose |
+|---|---:|---|
+| `BDC_MODE` | `local` | Runtime mode label (local/dev/prod) |
+| `BDC_MOCK_MODE` | `1` | Use fixtures/local inputs instead of calling external endpoints |
+| `BDC_VERIFY_TLS` | `1` | Verify TLS certificates for HTTPS fetches |
+| `BDC_MAX_DOC_KB` | `512` | Max size for fetched ORD docs (prevents “LLM ate my RAM” moments) |
+| `BDC_ORD_SOURCES` | *(empty)* | Comma-separated list of ORD sources (URLs or file paths) |
+| `BDC_PLUGINS` | *(empty)* | Comma-separated plugin module paths to load |
+| `BDC_ENABLE_WRITE_TOOLS` | `0` | Enables write tools (**keep OFF in v0.1**) |
 
-# Maximum document size in KB
-BDC_MAX_DOC_KB=512
+### Optional tenant identity (informational in v0.1)
 
-# Comma-separated list of ORD document sources (URLs or file paths)
-BDC_ORD_SOURCES=
-
-# Comma-separated list of plugin modules to load
-BDC_PLUGINS=
-
-# Enable write tools (disabled by default for safety)
-BDC_ENABLE_WRITE_TOOLS=0
-
-# Optional: Tenant information
-BDC_TENANT_ID=
-BDC_REGION=
-BDC_BASE_URL=
-BDC_USER=
-BDC_SERVICE_ACCOUNT=
-```
+| Variable | Purpose |
+|---|---|
+| `BDC_TENANT_ID` | Tenant identifier (redacted in outputs) |
+| `BDC_REGION` | Region label |
+| `BDC_BASE_URL` | Base URL label (redacted where appropriate) |
+| `BDC_USER` | User label (redacted) |
+| `BDC_SERVICE_ACCOUNT` | Service account label (redacted) |
 
 ---
 
-## Usage
+## Running the server
 
-### Running the Server
-
+### Stdio mode (default)
 ```bash
-# Start the MCP server (stdio mode)
 sap-bdc-mcp
 ```
 
-The server runs in stdio mode by default, suitable for integration with MCP clients like Cursor, Claude Desktop, or custom applications.
+This starts the MCP server on **stdio**, suitable for:
+- Cursor MCP integration
+- Claude Desktop MCP servers
+- LibreChat MCP connectors
+- custom MCP clients
 
-### Cursor Integration
-
-This repository includes MCP configuration for Cursor. Once installed, Cursor can automatically start the server as a stdio MCP server.
+### Alternative entry (useful for debugging)
+```bash
+python -m sap_bdc_mcp
+```
 
 ---
 
-## Tools Reference
+## Using from MCP clients
 
-### Core Tools
+### Cursor
+This repo includes a Cursor MCP configuration file at `.cursor/mcp.json`.
+
+Typical workflow:
+1. Open the repository in Cursor
+2. Ensure your venv is active and dependencies are installed
+3. Cursor will detect MCP config and can start the server automatically
+
+### Claude Desktop
+Add an MCP server entry (stdio) and point it to your environment’s `sap-bdc-mcp` executable.
+
+### LibreChat
+Configure an MCP server as a stdio tool provider and run it inside the same host/container boundary as LibreChat.
+
+> Exact configuration formats differ by client; the important invariant is: **this server speaks MCP over stdio in v0.1**.
+
+---
+
+## Tool catalog (v0.1)
+
+This section is intentionally detailed so you can:
+- understand expected inputs/outputs,
+- write deterministic agent prompts,
+- validate behavior without a BDC tenant.
+
+### Core tools
 
 #### `bdc_ping`
-Lightweight health check for configuration and server wiring.
+**Purpose:** lightweight health check for server wiring and config surface.
 
-**Returns:**
-- Server status and version
-- Current mode and mock mode status
-- Write tools enabled status
-
-**Example:**
+**Returns (example):**
 ```json
 {
   "ok": true,
@@ -164,300 +241,257 @@ Lightweight health check for configuration and server wiring.
 }
 ```
 
-#### `bdc_diagnostics`
-Structured environment and readiness report with automatic secret redaction.
+**Test prompts:**
+- “Call `bdc_ping` and tell me whether write tools are enabled.”
+- “Check if the SAP BDC MCP server is alive and report version + mode.”
 
-**Returns:**
-- Configuration details (mode, TLS settings, limits)
-- ORD sources configuration
-- Plugin status
-- All sensitive data automatically redacted
+---
+
+#### `bdc_diagnostics`
+**Purpose:** structured readiness report (all sensitive values redacted).
+
+**Returns (high level):**
+- runtime mode, TLS settings, limits
+- ORD source configuration
+- plugin status
+- redacted environment summary
+
+**Test prompts:**
+- “Run `bdc_diagnostics` and summarize what is configured vs missing.”
+- “Show me current safety limits and plugin status.”
+
+---
 
 #### `bdc_get_tenant_info`
-Get tenant information from environment/config with automatic redaction.
+**Purpose:** returns configured tenant labels (redacted), useful for client sanity checks.
 
-**Returns:**
-- Tenant ID, region, base URL (if configured)
-- Mode and mock status
-- All sensitive values redacted
+**Returns (high level):**
+- tenant id, region, base url (if configured)
+- mode + mock mode
+
+**Test prompts:**
+- “Use `bdc_get_tenant_info` and confirm whether a tenant is configured.”
+- “Show tenant metadata (redacted) and current mode.”
+
+---
 
 #### `bdc_whoami`
-Get current user/identity information (where supported) with automatic redaction.
+**Purpose:** returns identity labels (mock identity in mock mode).
 
-**Returns:**
-- User/service account information
-- Mock identity in mock mode
-- All sensitive data redacted
+**Returns (high level):**
+- user / service account identity (redacted)
+- mock identity when `BDC_MOCK_MODE=1`
+
+**Test prompts:**
+- “Call `bdc_whoami` and tell me who this server thinks it is.”
+- “Show identity info, but ensure secrets are not displayed.”
 
 ---
 
-### ORD (Open Resource Discovery) Tools
+### ORD tools (Open Resource Discovery)
 
 #### `bdc_ord_fetch_documents`
-Fetch ORD documents from URLs, files, or registries.
+**Purpose:** fetch ORD documents from sources (URLs or local files). Supports ORD **Configuration** expansion.
 
 **Parameters:**
-- `sources` (optional): List of URLs or file paths. If omitted, uses `BDC_ORD_SOURCES` from config.
+- `sources` *(optional)*: list of URLs/file paths. If omitted, uses `BDC_ORD_SOURCES`.
 
 **Returns:**
-- Document count
-- Full ORD documents (supports ORD Configuration expansion)
+- document count
+- full ORD documents (expanded if configuration docs are used)
 
-**Features:**
-- Supports both ORD Documents and ORD Configuration files
-- Automatically expands Configuration files to fetch referenced documents
-- Enforces size limits for security
-- Works with local files, HTTP/HTTPS URLs
+**Test prompts:**
+- “Fetch ORD docs from the configured sources, then summarize how many documents were loaded.”
+- “Load the local ORD sample fixture and list the available resource types.”
+
+---
 
 #### `bdc_ord_search`
-Search ORD resources across loaded documents.
+**Purpose:** search across loaded ORD documents.
 
 **Parameters:**
-- `query` (required): Search query string
-- `resource_type` (optional): Filter by resource type (default: "dataProduct")
-  - Supported types: dataProduct, apiResource, eventResource, entityType, capability, etc.
-- `sources` (optional): ORD document sources (uses config if omitted)
-- `limit` (optional): Maximum results (default: 25)
+- `query` *(required)*: search query string
+- `resource_type` *(optional)*: default `dataProduct`  
+  (e.g., `apiResource`, `eventResource`, `entityType`, `capability`)
+- `sources` *(optional)*: override sources (defaults to config)
+- `limit` *(optional)*: default `25`
 
 **Returns:**
-- Query and resource type used
-- Result count
-- Matching resources with metadata (ordId, title, description, etc.)
+- query + resource_type
+- count
+- matching resources (ordId, title, description, metadata)
 
-**Search covers:**
-- Resource IDs (ordId, localId)
-- Titles and descriptions
-- Tags and labels
+**Test prompts:**
+- “Search ORD for data products matching ‘finance’ and show top 5.”
+- “Search for ‘sales’ in `apiResource` and summarize results.”
+- “Find entity types containing ‘Customer’ and list ordIds.”
+
+---
 
 #### `bdc_ord_validate`
-Validate ORD documents against JSON Schema.
+**Purpose:** validate ORD documents against JSON Schema.
 
 **Parameters:**
-- `sources` (optional): ORD document sources to validate
+- `sources` *(optional)*: list of sources to validate (defaults to config)
 
 **Returns:**
-- Validation status (ok/not ok)
-- List of validation issues with paths and messages
-- Up to 50 issues reported per document
+- ok/not ok
+- issues with paths + messages (capped per document)
 
-**Validates:**
-- JSON structure
-- Required fields
-- Field types and formats
-- ORD schema compliance
+**Test prompts:**
+- “Validate the currently configured ORD sources and report any schema errors.”
+- “Validate the ORD fixture and show me the first 10 issues (if any).”
 
 ---
 
-### CSN (Common Schema Notation) Tools
+### CSN tools (Common Schema Notation)
 
 #### `bdc_csn_validate`
-Validate a CSN structure for Interop compatibility.
+**Purpose:** validate a CSN object for tooling compatibility.
 
 **Parameters:**
-- `csn` (required): CSN object to validate
+- `csn` *(required)*: CSN JSON object
 
 **Returns:**
-- Validation status
-- List of issues with codes and messages
+- ok/not ok
+- issues with codes + messages
 
-**Validates:**
-- JSON object structure
-- Required "definitions" key
-- Entity structure (kind, elements)
-- Element structure and types
+**Test prompts:**
+- “Validate this CSN and explain what’s missing or malformed.”
+- “Check whether this CSN is safe to publish as a contract.”
+
+---
 
 #### `bdc_csn_diff`
-Diff two CSNs and identify breaking vs non-breaking changes.
+**Purpose:** compare two CSNs and classify changes.
 
 **Parameters:**
-- `old_csn` (required): Previous CSN version
-- `new_csn` (required): New CSN version
+- `old_csn` *(required)*
+- `new_csn` *(required)*
 
 **Returns:**
-- Breaking changes (entity removals, kind changes, element removals, type changes)
-- Non-breaking changes (new entities, new elements)
-- Summary statistics
+- breaking changes: removals, incompatible type changes, kind changes
+- non-breaking changes: additive changes
+- summary stats
 
-**Detects:**
-- Entity additions/removals
-- Entity kind changes
-- Element additions/removals
-- Element type changes
-- Type compatibility issues
+**Test prompts:**
+- “Diff these two CSNs and list breaking changes first, then non-breaking.”
+- “Tell me if upgrading from old_csn to new_csn is backward compatible.”
+
+---
 
 #### `bdc_csn_render_docs`
-Render CSN to comprehensive Markdown documentation.
+**Purpose:** render CSN → Markdown documentation (contract docs).
 
 **Parameters:**
-- `csn` (required): CSN object to document
+- `csn` *(required)*
 
 **Returns:**
-- Markdown documentation string
+- Markdown string describing entities, fields, types, constraints
 
-**Includes:**
-- Entity overview and count
-- Entities grouped by kind
-- Element details with types
-- Key and nullable constraints
-- Descriptions and comments
+**Test prompts:**
+- “Generate Markdown docs for this CSN and include entity + field summaries.”
+- “Create a compact schema reference for this CSN.”
 
 ---
 
-### Share Planning Tools
+### Share planning tools (non-executing in v0.1)
 
 #### `bdc_share_plan`
-Create a share plan object (read-only, no mutation in v0.1).
+**Purpose:** create a share plan object (does not execute anything).
 
 **Parameters:**
-- `share_name` (required): Name of the share
-- `assets` (required): List of asset objects
-  - `type`: "table", "view", or "file"
-  - `name`: Asset identifier
-  - `schema` (optional): Schema/namespace
-  - `comment` (optional): Asset description
-- `description` (optional): Share description
-- `provider` (optional): Provider name (default: "sap-bdc")
+- `share_name` *(required)*
+- `assets` *(required)*: list of assets:
+  - `type`: `table` | `view` | `file`
+  - `name`: asset identifier
+  - `schema` *(optional)*: namespace/schema
+  - `comment` *(optional)*
+- `description` *(optional)*
+- `provider` *(optional)*: default `sap-bdc`
 
 **Returns:**
-- Complete share plan object with validated structure
+- normalized, validated share plan object
+
+**Test prompts:**
+- “Create a share plan called ‘demo_share’ with 2 tables in schema ‘FIN’.”
+- “Generate a share plan for these assets and return the resulting JSON.”
+
+---
 
 #### `bdc_share_validate_contract`
-Validate a share plan against safety limits and contract structure.
+**Purpose:** validate a share plan contract and safety limits.
 
 **Parameters:**
-- `plan` (required): Share plan object to validate
+- `plan` *(required)*: share plan JSON
+
+**Validations:**
+- required fields + structure
+- max asset count (50)
+- duplicate asset detection
+- asset naming/shape checks
 
 **Returns:**
-- Validation status
-- List of issues (if any)
+- ok/not ok
+- issues list (if any)
 
-**Validates:**
-- Plan structure and required fields
-- Asset count limits (max 50 assets)
-- Asset name validity
-- Duplicate asset detection
-- Asset structure compliance
-
-**Note:** In v0.1, this is a read-only validation. Share execution is planned for v0.2+.
+**Test prompts:**
+- “Validate this share plan and tell me what I need to fix.”
+- “Check whether this plan exceeds safety limits or contains duplicates.”
 
 ---
 
-## Development
+## Testing & quality
 
-### Running Tests
-
+### Run tests
 ```bash
-# Run all tests
 pytest
+```
 
-# Run with coverage
+### Run with coverage
+```bash
 pytest --cov=src/sap_bdc_mcp --cov-report=term-missing
-
-# Run specific test file
-pytest tests/test_ord_tools.py -v
 ```
 
-### Test Coverage
-
-Current test coverage: **72%+** with 36+ tests covering:
-- All core tools
-- ORD document operations
-- CSN validation, diffing, and rendering
-- Share plan creation and validation
-- Integration tests
-
-### Project Structure
-
-```
-sap-bdc-mcp/
-├── src/sap_bdc_mcp/
-│   ├── connectors/      # ORD and CSN clients
-│   ├── models/          # Pydantic models
-│   ├── schemas/         # JSON schemas (ORD)
-│   ├── tools/           # MCP tool implementations
-│   ├── config.py        # Configuration management
-│   ├── policy.py        # Policy and permission gating
-│   ├── redaction.py     # Secret redaction utilities
-│   └── server.py        # Server construction
-├── tests/               # Test suite
-├── fixtures/            # Test fixtures (ORD samples)
-└── docs/                # Documentation
-```
+**Test coverage (v0.1): 100%** statement coverage for `src/sap_bdc_mcp` is the quality bar for this repo (and should remain enforced as changes land).  
+If you ever see lower numbers, treat it as a regression and tighten tests before merging.
 
 ---
 
-## Safety & Security
+## Safety, security, and governance notes
 
-### Default Safety Settings
+This project is designed to be safe by default, but **enterprise safety is a system property**, not a single feature. Recommended posture:
 
-- **Write tools disabled by default** - Set `BDC_ENABLE_WRITE_TOOLS=1` to enable
-- **Automatic secret redaction** - All outputs are scanned and redacted
-- **Bounded outputs** - Document size limits enforced
-- **Policy gating** - Tools require appropriate permissions
+### Safe defaults baked in
+- **Write tools disabled** by default (`BDC_ENABLE_WRITE_TOOLS=0`)
+- **Automatic secret redaction** across tool outputs
+- **Bounded outputs** to prevent oversized data egress
+- **Mock mode** to develop without connecting to production
 
-### Redaction
+### Data handling expectations
+- v0.1 tools focus on **discovery + contract validation**, not data movement.
+- The server is intended to run **within your controlled boundary**.
+- When future versions add live BDC operations, they should be deployed with:
+  - least-privileged service accounts,
+  - strict network controls,
+  - centralized logging/monitoring,
+  - approvals for write actions (where appropriate).
 
-The server automatically redacts:
-- API keys and tokens
-- Passwords and secrets
-- Bearer tokens in strings
-- Credentials in URLs
-- Any field matching sensitive key patterns
+### Redaction scope
+The server automatically redacts common sensitive patterns including:
+- API keys, secrets, passwords
+- bearer tokens
+- credentials embedded in URLs
+- fields with sensitive key names
 
----
-
-## Roadmap
-
-### v0.1 (Current - In Progress)
-- ✅ Core server skeleton
-- ✅ ORD discovery tools
-- ✅ CSN validation tools
-- ✅ Share planning scaffolding
-- ✅ Comprehensive test suite
-- ✅ Safety primitives (redaction, policy gating)
-
-### v0.2 (Planned)
-- Share execution (Databricks/Delta Sharing)
-- BDC Connect SDK integration
-- Plugin registry
-- Enhanced ORD/CSN constraint validation
-
-### v0.3+ (Future)
-- Catalog/governance tools
-- Enterprise deployment bundles
-- Metrics and monitoring
-- Premium features
+> If you are deploying this inside an enterprise, treat this as one layer of defense-in-depth, not a substitute for DLP, IAM, and network security.
 
 ---
 
 ## Contributing
-
-Contributions are welcome! Please see `CONTRIBUTING.md` for guidelines.
+Contributions are welcome. Please see `CONTRIBUTING.md`.
 
 ---
 
 ## License
-
-MIT License - see `LICENSE` file for details.
-
----
-
-## Documentation
-
-Additional documentation is available in the `docs/` directory:
-
-- `ImplementationTracker_v0.1.md` - Implementation progress tracking
-- `VersionPlan_v0.1.md` - Version planning and scope
-- `ProjectPlan_v0.1.md` - Project plan and release criteria
-- `ToolCatalog.md` - Complete tool catalog
-- `TestPrompts_v0.1.md` - Example test prompts for MCP clients
-
----
-
-## Support
-
-For issues, questions, or contributions, please use the GitHub Issues page.
-
----
-
-**Status:** Version 0.1.0 (in progress) - Contract-first open-core implementation
+MIT — see `LICENSE`.
