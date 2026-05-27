@@ -1,7 +1,12 @@
 # File: MANIFEST.in
-# Version: v1
+# Version: v2
 
 include README.md
 include LICENSE
 include CONTRIBUTING.md
 recursive-include src/sap_bdc_mcp/schemas *.json
+
+# v0.2: the npx wrapper is a separately-published npm package. Do not ship
+# it inside the Python sdist/wheel.
+recursive-exclude npx-wrapper *
+prune npx-wrapper

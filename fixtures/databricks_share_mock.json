@@ -1,0 +1,76 @@
+{
+  "shares": {
+    "simple_share": {
+      "share_name": "simple_share",
+      "recipient": "acme_corp",
+      "comment": "Finance data — primitive columns only",
+      "schemas": [
+        {
+          "schema_name": "finance",
+          "tables": [
+            {
+              "table_name": "sales",
+              "columns": [
+                {"name": "id", "type": "bigint", "nullable": false},
+                {"name": "customer", "type": "string", "nullable": true},
+                {"name": "amount", "type": "decimal(18,2)", "nullable": true},
+                {"name": "currency", "type": "string", "nullable": true},
+                {"name": "is_paid", "type": "boolean", "nullable": true},
+                {"name": "ordered_at", "type": "timestamp", "nullable": true}
+              ]
+            },
+            {
+              "table_name": "products",
+              "columns": [
+                {"name": "sku", "type": "string", "nullable": false},
+                {"name": "name", "type": "string", "nullable": true},
+                {"name": "price", "type": "double", "nullable": true},
+                {"name": "launched_on", "type": "date", "nullable": true}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "complex_share": {
+      "share_name": "complex_share",
+      "recipient": "beta_corp",
+      "comment": "Has complex types — CSN generation refuses these",
+      "schemas": [
+        {
+          "schema_name": "people",
+          "tables": [
+            {
+              "table_name": "customers",
+              "columns": [
+                {"name": "id", "type": "bigint", "nullable": false},
+                {"name": "name", "type": "string", "nullable": true},
+                {"name": "address", "type": "struct<street:string,zip:string>", "nullable": true},
+                {"name": "tags", "type": "array<string>", "nullable": true}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "all_complex_share": {
+      "share_name": "all_complex_share",
+      "recipient": "gamma_corp",
+      "comment": "Every column is a complex type",
+      "schemas": [
+        {
+          "schema_name": "iot",
+          "tables": [
+            {
+              "table_name": "events",
+              "columns": [
+                {"name": "payload", "type": "map<string,string>", "nullable": true},
+                {"name": "samples", "type": "array<double>", "nullable": true}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

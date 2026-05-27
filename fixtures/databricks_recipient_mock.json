@@ -1,0 +1,18 @@
+{
+  "recipients": {
+    "acme_corp": {
+      "name": "acme_corp",
+      "authentication_type": "TOKEN",
+      "comment": "Primary partner recipient (mock)",
+      "activation_url": "https://share.databricks.example/recipients/acme/activate?token=***",
+      "created_at": "2026-01-01T00:00:00Z"
+    },
+    "beta_corp": {
+      "name": "beta_corp",
+      "authentication_type": "TOKEN",
+      "comment": "Secondary partner recipient (mock)",
+      "activation_url": "https://share.databricks.example/recipients/beta/activate?token=***",
+      "created_at": "2026-01-02T00:00:00Z"
+    }
+  }
+}

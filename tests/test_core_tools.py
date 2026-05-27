@@ -1,40 +1,38 @@
 """Core tools tests: ping and diagnostics.
 
 File: tests/test_core_tools.py
-Version: v1
+Version: v2
 """
 
-from sap_bdc_mcp.config import BDCConfig
-from sap_bdc_mcp.server import build_server
-from sap_bdc_mcp.tools.core import register
-from sap_bdc_mcp.plugin_loader import PluginLoadResult
 from mcp.server.fastmcp import FastMCP
 
+from sap_bdc_mcp.audit import AuditWriter
+from sap_bdc_mcp.config import BDCConfig
+from sap_bdc_mcp.server import build_server
+from sap_bdc_mcp.tools._gated import ToolContext
+from sap_bdc_mcp.tools.core import register
+from sap_bdc_mcp.tools.metadata import MetadataRegistry
 
-def test_bdc_ping_functionality() -> None:
-    """Test bdc_ping tool functionality by registering and calling it."""
+
+def _ctx(tmp_path=None) -> ToolContext:
     config = BDCConfig.from_env()
+    audit = AuditWriter(
+        str(tmp_path / "audit.jsonl") if tmp_path else ".sap_bdc_mcp/audit.jsonl",
+        enabled=False,
+    )
+    return ToolContext(config=config, audit=audit, metadata=MetadataRegistry(), plugin_status=[])
+
+
+def test_bdc_ping_functionality(tmp_path) -> None:
+    """Core tools register without error against a fresh FastMCP server."""
     server = FastMCP("Test")
-    plugin_status: list[PluginLoadResult] = []
-    
-    register(server, config, plugin_status)
-    
-    # Call the ping function directly
-    # We need to access the registered function - FastMCP stores them internally
-    # For testing, we'll verify the server builds and can be instantiated
-    # The actual tool execution is tested via integration tests
+    register(server, _ctx(tmp_path))
     assert server is not None
 
 
-def test_bdc_diagnostics_functionality() -> None:
-    """Test bdc_diagnostics tool functionality."""
-    config = BDCConfig.from_env()
+def test_bdc_diagnostics_functionality(tmp_path) -> None:
     server = FastMCP("Test")
-    plugin_status: list[PluginLoadResult] = []
-    
-    register(server, config, plugin_status)
-    
-    # Verify server is properly configured
+    register(server, _ctx(tmp_path))
     assert server is not None
 
 
@@ -42,5 +40,3 @@ def test_server_builds_with_core_tools() -> None:
     """Verify server builds successfully with all core tools registered."""
     server = build_server()
     assert server is not None
-    # Server should build without errors, indicating tools are registered
-

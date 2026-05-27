@@ -11,6 +11,7 @@ build/
 # Virtualenv
 .venv/
 venv/
+.venv-test/
 
 # Logs
 *.log
@@ -21,11 +22,19 @@ venv/
 .vscode/
 .cursor-cache/
 
-#Docs
+# Private: Claude Code tooling stays out of the public repo.
+.claude/
+CLAUDE.md
+
+# Private: all docs (including release execution artifacts) stay local.
+# Public surface for v0.2.0 lives in README.md + CHANGELOG.md at the repo root.
 docs/
 
+# Private: planning workspace.
+Plan/
+
 # Local env file
-.env    
+.env
 
 # Python tooling caches
 .pytest_cache/
