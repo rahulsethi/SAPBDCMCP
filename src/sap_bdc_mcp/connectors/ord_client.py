@@ -63,7 +63,10 @@ def _fetch_json(url: str, verify_tls: bool, max_doc_kb: int) -> Dict[str, Any]:
 
 
 def _is_configuration(payload: Dict[str, Any]) -> bool:
-    return isinstance(payload.get("openResourceDiscoveryV1"), dict) and "documents" in payload["openResourceDiscoveryV1"]
+    return (
+        isinstance(payload.get("openResourceDiscoveryV1"), dict)
+        and "documents" in payload["openResourceDiscoveryV1"]
+    )
 
 
 def _expand_configuration(
@@ -89,7 +92,9 @@ def _expand_configuration(
         doc_url = d.get("url") if isinstance(d, dict) else None
         if not doc_url:
             continue
-        full_url = doc_url if doc_url.startswith("http") else urljoin(base_url + "/", doc_url.lstrip("/"))
+        full_url = (
+            doc_url if doc_url.startswith("http") else urljoin(base_url + "/", doc_url.lstrip("/"))
+        )
         docs.append(_fetch_json(full_url, verify_tls=verify_tls, max_doc_kb=max_doc_kb))
     return docs
 
@@ -116,7 +121,11 @@ def load_ord_documents(
         if src.startswith("http://") or src.startswith("https://"):
             payload = _fetch_json(src, verify_tls=verify_tls, max_doc_kb=max_doc_kb)
             if _is_configuration(payload):
-                docs.extend(_expand_configuration(src, payload, verify_tls=verify_tls, max_doc_kb=max_doc_kb))
+                docs.extend(
+                    _expand_configuration(
+                        src, payload, verify_tls=verify_tls, max_doc_kb=max_doc_kb
+                    )
+                )
             else:
                 docs.append(payload)
             continue
@@ -132,7 +141,11 @@ def load_ord_documents(
             config_base = payload.get("baseUrl") or ""
             if not config_base:
                 raise ValueError("Configuration file missing baseUrl; cannot expand document URLs")
-            docs.extend(_expand_configuration(config_base, payload, verify_tls=verify_tls, max_doc_kb=max_doc_kb))
+            docs.extend(
+                _expand_configuration(
+                    config_base, payload, verify_tls=verify_tls, max_doc_kb=max_doc_kb
+                )
+            )
         else:
             docs.append(payload)
 

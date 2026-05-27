@@ -2,8 +2,9 @@
 
 An **MCP (Model Context Protocol)** server that exposes **safe, well-scoped SAP Business Data Cloud (BDC)** discovery + contract tooling for AI agents (Cursor, Claude Desktop, LibreChat, etc.) — with **enterprise-first guardrails** (redaction, policy gating, bounded outputs, and read-only defaults).
 
-> **Release:** v0.1.0  
-> **Focus (v0.1):** contract-first *open-core* foundation — **ORD discovery**, **CSN contract checks**, and **share planning (non-executing)**.
+> **Latest release:** v0.2.0 — *Governed BDC Connect* (Databricks-first execution, Snowflake readiness, audit + policy gates, npx distribution wrapper, subprocess plugin upstreams). See the [v0.2.0 section at the end of this README](#v020--governed-bdc-connect-2026-05-27) and the [CHANGELOG](CHANGELOG.md).
+>
+> **Previous release:** v0.1.0 — contract-first *open-core* foundation: **ORD discovery**, **CSN contract checks**, **share planning (non-executing)**. The v0.1 content below describes that initial baseline; v0.2 builds on it without breaking compatibility.
 
 ---
 
@@ -52,8 +53,6 @@ A typical flow:
 ---
 
 ## Architecture (plugin-based, safety-first)
-
-This repository follows a **plugin-friendly** pattern inspired by the SAP Datasphere MCP server approach: core server + modular tool packs, with shared safety primitives.
 
 ### Component view
 
@@ -513,3 +512,108 @@ Contributions are welcome. Please see `CONTRIBUTING.md`.
 
 ## License
 MIT — see `LICENSE`.
+
+---
+
+## v0.2.0 — *Governed BDC Connect* (2026-05-27)
+
+v0.2.0 turns sap-bdc-mcp from a contract-first discovery server (v0.1) into a **governed-execution** server. Three deltas land:
+
+1. **Provider-neutral execution layer** — `BDCConnectProvider` ABC with `DatabricksProvider` (real provider) and `SnowflakeProvider` (readiness-only at v0.2; mutation deferred to v0.3 per ADR-002).
+2. **Policy + audit teeth** — tool risk metadata, SAP API policy evidence, dry-run + approval-token gating, JSONL audit log.
+3. **Multi-runtime reach** — `BDC_PLUGINS` now accepts `npx:` / `uvx:` / `cmd:` upstream MCP servers as subprocess plugins. sap-bdc-mcp itself can now be launched via `npx -y sap-bdc-mcp@0.2.0` thanks to a Node bootstrap wrapper that bridges to `uvx`.
+
+### What's new — tool surface
+
+8 new MCP tools land at v0.2 on top of the 12 from v0.1:
+
+| Tool | Category | Mutability | Risk | Notes |
+|---|---|---|---|---|
+| `bdc_tool_risk_catalog` | governance | READ | low | All registered tools + their risk metadata |
+| `bdc_policy_explain` | governance | READ | low | Which gates apply to a tool and would they pass now |
+| `bdc_api_policy_check` | governance | READ | low | SAP API evidence summary per tool |
+| `bdc_audit_tail` | governance | READ | low | Recent audit events (redacted, capped) |
+| `bdc_connect_list_providers` | providers | READ | low | Configured providers + capabilities |
+| `bdc_connect_diagnostics` | providers | READ | low | Provider configuration health |
+| `bdc_connect_preflight` | providers | READ | low | Run a provider's preflight |
+| `bdc_databricks_preflight` | databricks | READ | medium | Databricks share-readiness preflight |
+| `bdc_databricks_validate_share_readiness` | databricks | READ | medium | Per-share readiness check |
+| `bdc_databricks_generate_csn_from_share` | databricks | READ | low | CSN from a Databricks share (primitives only — see D-006) |
+| `bdc_snowflake_preflight` | snowflake | READ | low | Snowflake readiness checks (no mutation at v0.2) |
+| `bdc_snowflake_explain_flow` | snowflake | READ | low | Documented publish flow text |
+| `bdc_share_execute_plan` | sharing | **WRITE** | **high** | Governed execution. Requires dry-run + approval token |
+
+All 12 v0.1 tools are still registered and identical in behavior — they now also produce audit events.
+
+### Two install routes
+
+**Python (recommended for production):**
+```bash
+pip install sap-bdc-mcp==0.2.0
+sap-bdc-mcp --help
+```
+
+**Node / npx (no Python toolchain to manage):**
+```bash
+npx -y sap-bdc-mcp@0.2.0 --help
+```
+The wrapper bootstraps Python via [`uv`](https://docs.astral.sh/uv/) automatically. If `uvx` isn't on your PATH, the wrapper prints a one-screen install hint and exits.
+
+### Configure in your MCP client
+
+`claude_desktop_config.json` (Python install):
+```json
+{
+  "mcpServers": {
+    "sap-bdc-mcp": {
+      "command": "sap-bdc-mcp",
+      "env": { "BDC_MODE": "local", "BDC_MOCK_MODE": "1" }
+    }
+  }
+}
+```
+
+`claude_desktop_config.json` (npx install):
+```json
+{
+  "mcpServers": {
+    "sap-bdc-mcp": {
+      "command": "npx",
+      "args": ["-y", "sap-bdc-mcp@0.2.0"],
+      "env": { "BDC_MODE": "local", "BDC_MOCK_MODE": "1" }
+    }
+  }
+}
+```
+
+### Safe defaults (unchanged spirit, more teeth)
+
+- `BDC_ENABLE_WRITE_TOOLS=0` and `BDC_ENABLE_ADMIN_TOOLS=0` by default — every mutating tool is refused until you opt in.
+- `BDC_REQUIRE_DRY_RUN=1` — high-risk tools must dry-run first; the dry-run returns a `correlation_id` you replay on real execute.
+- `BDC_REQUIRE_APPROVAL_TOKEN=1` + `BDC_APPROVAL_TOKEN=<your-secret>` — every real execution must pass a constant-time-compare token (per [D-003](docs/release/v0.2.0/03_Decisions/D-003-approval-token-mechanism.md)).
+- `BDC_API_POLICY_STRICT=1` — WRITE/ADMIN tools with `api_surface=UNKNOWN` are refused. This is what gates subprocess plugin proxies by default.
+- `BDC_AUDIT_ENABLED=1` — every tool call writes a JSONL audit event (sha256-hashed inputs after redaction). Tail via `bdc_audit_tail`.
+
+Full env-var reference + troubleshooting + the upgrade path from v0.1 is in the [CHANGELOG](CHANGELOG.md).
+
+### Subprocess plugin upstreams (npx / uvx / cmd)
+
+```bash
+BDC_PLUGINS="gh=npx:@modelcontextprotocol/server-github@latest,sentry=uvx:mcp-server-sentry"
+BDC_PLUGIN_TRUST="gh:documented_sdk"          # operator-asserted trust
+BDC_PLUGIN_ENV_PASSTHROUGH="GITHUB_TOKEN"     # secrets to forward
+```
+
+Child MCP server tools are proxied as `plug_<alias>__<tool>`, treated as `WRITE / UNKNOWN-surface` by default, gated through the same audit + policy chain. Trust is operator-asserted; sap-bdc-mcp never blindly trusts a child's metadata.
+
+### Publishing
+
+PyPI + npm + GitHub Releases. Publishing is a deliberate, manual step performed by the maintainer. The artifacts to upload are:
+
+- PyPI: `dist/sap_bdc_mcp-0.2.0-py3-none-any.whl` and `dist/sap_bdc_mcp-0.2.0.tar.gz` (produced by `python -m build`)
+- npm: `npx-wrapper/` (`cd npx-wrapper && npm publish --access public`)
+- GitHub Release: tag `v0.2.0` with the [CHANGELOG](CHANGELOG.md) v0.2.0 section as the body
+
+### Full changelog
+
+See [`CHANGELOG.md`](CHANGELOG.md) — the canonical record of what's in v0.2.0.

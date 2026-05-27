@@ -19,4 +19,3 @@ def test_bdc_whoami_registered() -> None:
     server = build_server()
     assert server is not None
     # Tool should be registered (verified by server build success)
-

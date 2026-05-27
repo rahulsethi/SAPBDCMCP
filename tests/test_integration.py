@@ -12,7 +12,7 @@ def test_server_builds_and_configures() -> None:
     """Test that server builds with proper configuration."""
     server = build_server()
     assert server is not None
-    
+
     # Verify config can be loaded
     config = BDCConfig.from_env()
     assert config is not None
@@ -26,12 +26,11 @@ def test_server_with_mock_mode() -> None:
     """Test server works in mock mode."""
     import os
     from unittest.mock import patch
-    
+
     # Temporarily set mock mode
     with patch.dict(os.environ, {"BDC_MOCK_MODE": "1"}):
         config = BDCConfig.from_env()
         assert config.mock_mode is True
-        
+
         server = build_server()
         assert server is not None
-

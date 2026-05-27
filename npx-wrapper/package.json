@@ -1,0 +1,35 @@
+{
+  "name": "sap-bdc-mcp",
+  "version": "0.2.0",
+  "description": "npx wrapper for sap-bdc-mcp (Python). Bootstraps the Python MCP server via uvx. All server logic lives in the PyPI package sap-bdc-mcp.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "sap",
+    "business-data-cloud",
+    "bdc",
+    "ord",
+    "csn"
+  ],
+  "homepage": "https://github.com/rahulsethi/sap-bdc-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rahulsethi/sap-bdc-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rahulsethi/sap-bdc-mcp/issues"
+  },
+  "author": "Rahul Sethi",
+  "license": "MIT",
+  "bin": {
+    "sap-bdc-mcp": "bin/sap-bdc-mcp.js"
+  },
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -20,7 +20,7 @@ def test_share_plan_creation() -> None:
         provider="sap-bdc",
         assets=[ShareAsset(**a) for a in assets],
     )
-    
+
     assert plan.name == "test_share"
     assert plan.description == "Test share plan"
     assert len(plan.assets) == 2
@@ -36,7 +36,7 @@ def test_share_plan_serialization() -> None:
         assets=[ShareAsset(**a) for a in assets],
     )
     dumped = plan.model_dump(by_alias=True)
-    
+
     assert dumped["name"] == "test_share"
     assert len(dumped["assets"]) == 1
     assert dumped["assets"][0]["name"] == "test_table"
@@ -45,11 +45,10 @@ def test_share_plan_serialization() -> None:
 def test_share_validate_contract_functionality() -> None:
     """Test share validation logic directly."""
     from sap_bdc_mcp.models.share_plan import SharePlan
-    from sap_bdc_mcp.tools.share_tools import SHARE_VALIDATE_POLICY
     from sap_bdc_mcp.config import BDCConfig
-    
-    config = BDCConfig.from_env()
-    
+
+    BDCConfig.from_env()
+
     # Test with valid plan
     plan_dict = {
         "name": "test_share",
@@ -57,7 +56,7 @@ def test_share_validate_contract_functionality() -> None:
         "provider": "sap-bdc",
         "assets": [{"type": "table", "name": "test_table"}],
     }
-    
+
     # Validate the plan structure
     plan = SharePlan.model_validate(plan_dict)
     assert plan.name == "test_share"
@@ -67,7 +66,7 @@ def test_share_validate_contract_functionality() -> None:
 def test_share_validate_contract_too_many_assets() -> None:
     """Test validation logic for too many assets."""
     from sap_bdc_mcp.models.share_plan import SharePlan
-    
+
     # Create plan with > 50 assets
     plan_dict = {
         "name": "test_share",
@@ -75,7 +74,7 @@ def test_share_validate_contract_too_many_assets() -> None:
         "provider": "sap-bdc",
         "assets": [{"type": "table", "name": f"table_{i}"} for i in range(51)],
     }
-    
+
     plan = SharePlan.model_validate(plan_dict)
     assert len(plan.assets) == 51
     # The validation logic in share_tools will check this
@@ -86,4 +85,3 @@ def test_share_tools_server_builds() -> None:
     server = build_server()
     assert server is not None
     # Server should build without errors, indicating tools are registered
-

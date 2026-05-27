@@ -46,7 +46,10 @@ def test_ord_search_by_query() -> None:
     hits = search_ord_resources(docs, query="finance", resource_type="dataProduct", limit=10)
     assert len(hits) >= 1
     assert hits[0]["type"] == "dataProduct"
-    assert "finance" in hits[0].get("title", "").lower() or "finance" in hits[0].get("description", "").lower()
+    assert (
+        "finance" in hits[0].get("title", "").lower()
+        or "finance" in hits[0].get("description", "").lower()
+    )
 
 
 def test_ord_search_by_type() -> None:
@@ -104,4 +107,3 @@ def test_ord_tools_server_builds() -> None:
     server = build_server()
     assert server is not None
     # Server should build without errors, indicating tools are registered
-

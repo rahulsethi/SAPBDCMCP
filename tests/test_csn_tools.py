@@ -30,7 +30,7 @@ def test_csn_validate_with_elements() -> None:
                 "elements": {
                     "field1": {"type": "String"},
                     "field2": {"type": "Integer", "key": True},
-                }
+                },
             },
         }
     }
@@ -74,7 +74,7 @@ def test_csn_diff_added_entities() -> None:
     """Test CSN diff detects added entities."""
     old_csn = {"definitions": {"Entity1": {"kind": "entity"}}}
     new_csn = {"definitions": {"Entity1": {"kind": "entity"}, "Entity2": {"kind": "entity"}}}
-    
+
     result = csn_diff(old_csn, new_csn)
     assert "breaking" in result
     assert "non_breaking" in result
@@ -86,7 +86,7 @@ def test_csn_diff_removed_entities() -> None:
     """Test CSN diff detects removed entities."""
     old_csn = {"definitions": {"Entity1": {"kind": "entity"}, "Entity2": {"kind": "entity"}}}
     new_csn = {"definitions": {"Entity1": {"kind": "entity"}}}
-    
+
     result = csn_diff(old_csn, new_csn)
     assert result["summary"]["removed_entities"] >= 1
     assert len(result["breaking"]) >= 1
@@ -185,4 +185,3 @@ def test_csn_tools_server_builds() -> None:
     server = build_server()
     assert server is not None
     # Server should build without errors, indicating tools are registered
-

@@ -1,5 +1,5 @@
 # File: .github/workflows/ci.yml
-# Version: v1
+# Version: v2
 
 name: CI
 
@@ -34,5 +34,61 @@ jobs:
           ruff check .
           ruff format --check .
 
+      - name: Type-check (mypy)
+        run: mypy src/sap_bdc_mcp
+
       - name: Tests
         run: pytest -q
+
+  npx-smoke:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install uv (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install uv (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          irm https://astral.sh/uv/install.ps1 | iex
+          $uvBin = "$env:USERPROFILE\.local\bin"
+          Add-Content -Path $env:GITHUB_PATH -Value $uvBin
+
+      - name: Verify uv on PATH
+        run: uv --version
+
+      - name: Smoke — wrapper boots and forwards --help
+        shell: bash
+        run: |
+          set +e
+          node npx-wrapper/bin/sap-bdc-mcp.js --help
+          ec=$?
+          set -e
+          # Acceptable: 0 (server printed help) or 2 (uvx not on PATH — should not happen here).
+          # Anything else is a wrapper failure.
+          if [ "$ec" -ne 0 ] && [ "$ec" -ne 2 ]; then
+            echo "::error::npx wrapper smoke failed with exit code $ec"
+            exit 1
+          fi
+
+      - name: Upload wrapper artifact (tag pushes only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: npx-wrapper-${{ matrix.os }}
+          path: npx-wrapper/
