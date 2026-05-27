@@ -58,6 +58,7 @@ The first **execution-capable** release. v0.2.0 turns sap-bdc-mcp from a contrac
 - Pre-existing ruff `F401` / `F841` warnings in `tests/test_share_tools.py` and `src/sap_bdc_mcp/plugin_loader.py` cleaned up.
 - mypy now passes cleanly across all 35 source files (`types-jsonschema` stubs added).
 
+<<<<<<< HEAD
 ### Licensing
 
 - **Relicensed from MIT → PolyForm Noncommercial License 1.0.0** from v0.2.0 onward.
@@ -66,6 +67,8 @@ The first **execution-capable** release. v0.2.0 turns sap-bdc-mcp from a contrac
   - Commercial / for-profit use now requires a separate license from the copyright holder.
   - See `LICENSE` for the full text and `docs_public/COMMERCIAL_LICENSING.md` for inquiry instructions.
 
+=======
+>>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
 ### Deferred (not in v0.2.0)
 
 - Snowflake share execution → v0.3.

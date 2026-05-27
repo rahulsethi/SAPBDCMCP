@@ -511,11 +511,15 @@ Contributions are welcome. Please see `CONTRIBUTING.md`.
 ---
 
 ## License
+<<<<<<< HEAD
 
 `sap-bdc-mcp` is licensed under the **PolyForm Noncommercial License 1.0.0** from v0.2.0 onward. (v0.1.0 was MIT; that version remains MIT-licensed for code already in use.) See [`LICENSE`](LICENSE) for the full text.
 
 - **Free for noncommercial use** — personal, evaluation, research, academic, and use by charitable / educational / public / government institutions.
 - **Commercial / for-profit use requires a separate license.** See [`docs_public/COMMERCIAL_LICENSING.md`](docs_public/COMMERCIAL_LICENSING.md) to inquire.
+=======
+MIT — see `LICENSE`.
+>>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
 
 ---
 

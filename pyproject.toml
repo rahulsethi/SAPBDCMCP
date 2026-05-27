@@ -1,5 +1,9 @@
 # File: pyproject.toml
+<<<<<<< HEAD
 # Version: v6
+=======
+# Version: v5
+>>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
 
 [project]
 name = "sap-bdc-mcp"
