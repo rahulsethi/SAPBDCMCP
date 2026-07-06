@@ -55,36 +55,51 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install uv (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      # The wrapper boots the Python server via `uvx sap-bdc-mcp@<PIN>`, which only
+      # resolves once that version is published to PyPI. Until then we test the
+      # wrapper's OWN logic hermetically (no PyPI, no uv install required):
+      #   1. it is valid JS,
+      #   2. it exits 2 with an install hint when uvx is absent,
+      #   3. (Linux) it forwards the correct args + exit code to uvx (via a stub).
+      # The real end-to-end boot is verified manually after the PyPI publish.
 
-      - name: Install uv (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          irm https://astral.sh/uv/install.ps1 | iex
-          $uvBin = "$env:USERPROFILE\.local\bin"
-          Add-Content -Path $env:GITHUB_PATH -Value $uvBin
-
-      - name: Verify uv on PATH
-        run: uv --version
-
-      - name: Smoke — wrapper boots and forwards --help
+      - name: Smoke — wrapper is valid JS and handles a missing uvx
         shell: bash
         run: |
-          set +e
-          node npx-wrapper/bin/sap-bdc-mcp.js --help
-          ec=$?
-          set -e
-          # Acceptable: 0 (server printed help) or 2 (uvx not on PATH — should not happen here).
-          # Anything else is a wrapper failure.
-          if [ "$ec" -ne 0 ] && [ "$ec" -ne 2 ]; then
-            echo "::error::npx wrapper smoke failed with exit code $ec"
-            exit 1
+          set -uo pipefail
+          node --check npx-wrapper/bin/sap-bdc-mcp.js \
+            || { echo "::error::wrapper is not valid JavaScript"; exit 1; }
+          # GitHub-hosted runners do not ship uv/uvx, so the wrapper should take its
+          # "uvx missing" branch: exit 2 and print an install hint. If a runner image
+          # ever does have uvx, skip this assertion (a real boot would need the package
+          # on PyPI) rather than fail — the Linux stub step below still covers forwarding.
+          if command -v uvx >/dev/null 2>&1; then
+            echo "::notice::uvx is present on this runner; skipping the missing-uvx assertion"
+          else
+            out="$(node npx-wrapper/bin/sap-bdc-mcp.js --help 2>&1)"; ec=$?
+            printf '%s\n' "$out"
+            echo "wrapper exit code: $ec"
+            if [ "$ec" -ne 2 ]; then
+              echo "::error::expected exit 2 when uvx is not installed, got $ec"
+              exit 1
+            fi
+            printf '%s\n' "$out" | grep -qi "requires 'uvx'" \
+              || { echo "::error::missing-uvx install hint was not printed"; exit 1; }
           fi
+
+      - name: Smoke — wrapper forwards the correct args to uvx (stub, Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          stub="$(mktemp -d)"
+          printf '#!/usr/bin/env bash\necho "STUB_UVX_ARGS: $*"\nexit 0\n' > "$stub/uvx"
+          chmod +x "$stub/uvx"
+          export PATH="$stub:$PATH"
+          out="$(node npx-wrapper/bin/sap-bdc-mcp.js --help)"
+          printf '%s\n' "$out"
+          printf '%s\n' "$out" | grep -q -- "STUB_UVX_ARGS: --python 3.11 sap-bdc-mcp@0.2.0 --help" \
+            || { echo "::error::wrapper did not forward the expected args to uvx"; exit 1; }
 
       - name: Upload wrapper artifact (tag pushes only)
         if: startsWith(github.ref, 'refs/tags/v')
