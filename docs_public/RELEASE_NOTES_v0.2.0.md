@@ -1,6 +1,6 @@
 # Release Notes — v0.2.0 — *Governed BDC Connect*
 
-**Release date:** 2026-05-27
+**Release date:** 2026-07-06
 **Audience:** End users, agent operators, architects, security reviewers.
 **One-liner:** Discovery server grows execution muscle — Databricks-first share execution, Snowflake readiness, every tool call gated and audited, and a Node `npx` install route.
 
