@@ -4,7 +4,7 @@ Thanks for your interest in `sap-bdc-mcp`. Contributions are welcome.
 
 ## Licensing
 
-By contributing a pull request to this repository, you agree that your contribution will be licensed under the project's current license — the **PolyForm Noncommercial License 1.0.0** (see [`LICENSE`](LICENSE)). The maintainer retains the right to use, modify, and (where applicable) relicense the codebase including your contributions.
+By contributing a pull request to this repository, you agree that your contribution will be licensed under the project's current license — the **Business Source License 1.1 (BSL 1.1)** (see [`LICENSE`](LICENSE)). The maintainer retains the right to use, modify, and (where applicable) relicense the codebase including your contributions.
 
 If you cannot agree to those terms, please open an issue first to discuss.
 

@@ -1,112 +1,65 @@
-<<<<<<< HEAD
-PolyForm Noncommercial License 1.0.0
-====================================
+Business Source License 1.1
 
-Required Notice: Copyright (c) 2026 Rahul Sethi (https://github.com/rahulsethi/SAPBDCMCP)
+Parameters
 
-----------------------------------------------------------------------
-Quick-read summary (NOT the legal text — see below for the binding terms):
+Licensor:             Rahul Sethi
+Licensed Work:        SAP BDC MCP Server (sap-bdc-mcp) 0.2.0 or later
+                      (https://github.com/rahulsethi/SAPBDCMCP)
+Additional Use Grant: You may make use of the Licensed Work for non-commercial
+                      purposes, including personal use, research, academic use,
+                      and internal evaluation. Use for any Commercial Purpose
+                      requires a separate commercial license from the Licensor.
+                      "Commercial Purpose" means use in exchange for payment or
+                      other commercial benefit, including: (a) use in paid
+                      consulting or professional services; (b) embedding in a
+                      product or service that is sold or licensed; (c) providing
+                      the Licensed Work as a hosted or managed service to third
+                      parties.
+Change Date:          2029-01-01
+Change License:       Apache License, Version 2.0
 
-  * FREE for personal use, hobby projects, evaluation, research,
-    academic use, and use by charitable, educational, public-safety,
-    public-health, environmental, or government institutions.
+For alternative licensing, contact:
+https://github.com/rahulsethi/SAPBDCMCP/issues
 
-  * COMMERCIAL / FOR-PROFIT use (including internal use at a for-profit
-    organization, embedding in a product, or operating a paid service
-    that depends on this software) is NOT permitted under this license.
-    A separate commercial license is required from the copyright holder.
+---
 
-  * See docs_public/COMMERCIAL_LICENSING.md for commercial inquiry
-    instructions.
+Historical note: versions of this software up to and including v0.1.0 were
+released under the MIT License. The Business Source License 1.1 applies from
+v0.2.0 onward. Code already in use under the MIT-licensed v0.1.0 release may
+continue to be used under MIT for that version only. This is the same license
+arrangement as the sibling project SAPDatasphereMCP
+(https://github.com/rahulsethi/SAPDatasphereMCP).
 
-The legally binding text is the full PolyForm Noncommercial License
-1.0.0, reproduced below verbatim. The canonical source is:
+---
 
-    https://polyformproject.org/licenses/noncommercial/1.0.0
+Business Source License 1.1
 
-----------------------------------------------------------------------
-Historical note: versions of this software up to and including v0.1.0
-were released under the MIT License. The PolyForm Noncommercial License
-1.0.0 applies from v0.2.0 onward. Code already in use under MIT under
-v0.1.0 may continue to be used under MIT for that version only.
-----------------------------------------------------------------------
+Terms
 
-# PolyForm Noncommercial License 1.0.0
+The Licensor hereby grants you the right to copy, modify, create derivative
+works, redistribute, and make non-production use of the Licensed Work. The
+Licensor may make an Additional Use Grant, above, permitting limited production
+use.
 
-## Acceptance
-In order to get any license under these terms, you must agree to them as both strict obligations and conditions to all your licenses.
+Effective on the Change Date, or the fourth anniversary of the first publicly
+available distribution of a specific version of the Licensed Work under this
+License, whichever comes first, the Licensor hereby grants you rights under
+the terms of the Change License, and these rights are irrevocable.
 
-## Copyright License
-The licensor grants you a copyright license for the software to do everything you might do with the software that would otherwise infringe the licensor's copyright in it for any permitted purpose. However, you may only distribute the software according to Distribution License and make changes or new works based on the software according to Changes and New Works License.
+Conditions
 
-## Distribution License
-The licensor grants you an additional copyright license to distribute copies of the software. Your license to distribute covers distributing the software with changes and new works permitted by Changes and New Works License.
+Notice of License
 
-## Notices
-You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms or the URL for them above, as well as copies of any plain-text lines beginning with `Required Notice:` that the licensor provided with the software. For example:
+You must retain this license notice and all notices of the license in all
+copies of the Licensed Work that you distribute or make available.
 
-> Required Notice: Copyright Yoyodyne, Inc. (http://example.com)
+No Sublicensing
 
-## Changes and New Works License
-The licensor grants you an additional copyright license to make changes and new works based on the software for any permitted purpose.
+You may not sublicense the Licensed Work.
 
-## Patent License
-The licensor grants you a patent license for the software that covers patent claims the licensor can license, or becomes able to license, that you would infringe by using the software.
+No Additional Restrictions
 
-## Noncommercial Purposes
-Any noncommercial purpose is a permitted purpose.
+You may not apply legal terms or technological measures that legally restrict
+others from doing anything this license permits.
 
-## Personal Uses
-Personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, without any anticipated commercial application, is use for a permitted purpose.
-
-## Noncommercial Organizations
-Use by any charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization, or government institution is use for a permitted purpose regardless of the source of funding or obligations resulting from the funding.
-
-## Fair Use
-You may have "fair use" rights for the software under the law. These terms do not limit them.
-
-## No Other Rights
-These terms do not allow you to sublicense or transfer any of your licenses to anyone else, or prevent the licensor from granting licenses to anyone else. These terms do not imply any other licenses.
-
-## Patent Defense
-If you make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
-
-## Violations
-The first time you are notified in writing that you have violated any of these terms, or done anything with the software not covered by your licenses, your licenses can nonetheless continue if you come into full compliance with these terms, and take practical steps to correct past violations, within 32 days of receiving notice. Otherwise, all your licenses end immediately.
-
-## No Liability
-_**As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.**_
-
-## Definitions
-The **licensor** is the individual or entity offering these terms, and the **software** is the software the licensor makes available under these terms.
-
-**You** refers to the individual or entity agreeing to these terms.
-
-**Your company** is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization. **Control** means ownership of substantially all the assets of an entity, or the power to direct its management and policies by vote, contract, or otherwise. Control can be direct or indirect.
-
-**Your licenses** are all the licenses granted to you for the software under these terms.
-
-**Use** means anything you do with the software requiring one of your licenses.
-=======
-MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
->>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
+Required Notice: Copyright 2026 Rahul Sethi (https://github.com/rahulsethi/SAPBDCMCP)

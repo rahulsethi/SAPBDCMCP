@@ -1,6 +1,6 @@
 # Commercial Licensing — `sap-bdc-mcp`
 
-`sap-bdc-mcp` is distributed under the [PolyForm Noncommercial License 1.0.0](../LICENSE). That license is free of charge for **noncommercial** use. **Commercial use requires a separate license** from the copyright holder.
+`sap-bdc-mcp` is distributed under the [Business Source License 1.1 (BSL 1.1)](../LICENSE) — the same license as its sibling [SAPDatasphereMCP](https://github.com/rahulsethi/SAPDatasphereMCP). That license is free of charge for **noncommercial** use, and it converts automatically to **Apache 2.0 on 2029-01-01**. **Commercial use requires a separate license** from the copyright holder until then.
 
 This page explains what counts as commercial use, why a commercial license exists, and how to inquire about one.
 
@@ -12,7 +12,7 @@ This page explains what counts as commercial use, why a commercial license exist
 
 - You are an individual using `sap-bdc-mcp` for personal study, hobby projects, evaluation, or research that has no anticipated commercial application.
 - You are a student or academic using it for coursework or unfunded / publicly-funded research.
-- You work for a **charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization, or government institution** (the PolyForm Noncommercial license's "Noncommercial Organizations" carve-out — see [the LICENSE](../LICENSE) for the exact text).
+- You work for a **charitable, educational, public research, public-safety, public-health, environmental, or government institution** and your use is non-commercial (BSL 1.1's Additional Use Grant permits any non-commercial use — see [the LICENSE](../LICENSE) for the exact text).
 - You are evaluating `sap-bdc-mcp` as part of a vendor selection process and have not yet committed it to production.
 
 **You DO need a commercial license if:**
@@ -84,14 +84,14 @@ We do not publish a fixed price list. Pricing is negotiated per agreement, facto
 
 ## 6. Other questions
 
-- **"My company is exploring `sap-bdc-mcp` and not yet in production — do I need a license now?"**  No. The PolyForm Noncommercial license permits evaluation. Once you commit it to commercial use, you will need a license at that point.
+- **"My company is exploring `sap-bdc-mcp` and not yet in production — do I need a license now?"**  No. BSL 1.1's Additional Use Grant permits internal evaluation. Once you commit it to commercial use, you will need a license at that point.
 - **"We are a SAP partner / consultancy. Does the noncommercial license cover client work?"**  No. Paid consulting work that uses `sap-bdc-mcp` is commercial use. Please inquire about a partner license.
 - **"Can I contribute back to the project?"**  Yes. Contributions are welcome under the contributor-license terms in `CONTRIBUTING.md`. Contributing does not require a commercial license. The maintainer reserves the right to relicense the project's own code base; your contribution is still credited and remains useful to noncommercial users in perpetuity.
-- **"What about v0.1.0 — that was MIT?"**  Correct. Code already in use under the MIT-licensed v0.1.0 release stays under MIT for that version. The PolyForm Noncommercial license applies from v0.2.0 onward.
+- **"What about v0.1.0 — that was MIT?"**  Correct. Code already in use under the MIT-licensed v0.1.0 release stays under MIT for that version. The Business Source License 1.1 applies from v0.2.0 onward, and converts to Apache 2.0 on 2029-01-01.
 
 ## 7. Quick links
 
-- [`LICENSE`](../LICENSE) — the full PolyForm Noncommercial 1.0.0 text.
+- [`LICENSE`](../LICENSE) — the full Business Source License 1.1 text.
 - [`INSTALLATION.md`](INSTALLATION.md) — how to install and configure the server.
 - [`SAP_API_POLICY.md`](SAP_API_POLICY.md) — how `sap-bdc-mcp` aligns with SAP's API policy (often part of an enterprise procurement review).
 - [`../CHANGELOG.md`](../CHANGELOG.md) — version history.

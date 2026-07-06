@@ -511,15 +511,12 @@ Contributions are welcome. Please see `CONTRIBUTING.md`.
 ---
 
 ## License
-<<<<<<< HEAD
 
-`sap-bdc-mcp` is licensed under the **PolyForm Noncommercial License 1.0.0** from v0.2.0 onward. (v0.1.0 was MIT; that version remains MIT-licensed for code already in use.) See [`LICENSE`](LICENSE) for the full text.
+`sap-bdc-mcp` is licensed under the **Business Source License 1.1 (BSL 1.1)** from v0.2.0 onward — the same license as its sibling [SAPDatasphereMCP](https://github.com/rahulsethi/SAPDatasphereMCP). It converts automatically to **Apache 2.0 on 2029-01-01**. (v0.1.0 was MIT; that version remains MIT-licensed for code already in use.) See [`LICENSE`](LICENSE) for the full text.
 
-- **Free for noncommercial use** — personal, evaluation, research, academic, and use by charitable / educational / public / government institutions.
+- **Free for noncommercial use** — personal, evaluation, research, academic, and internal evaluation.
 - **Commercial / for-profit use requires a separate license.** See [`docs_public/COMMERCIAL_LICENSING.md`](docs_public/COMMERCIAL_LICENSING.md) to inquire.
-=======
-MIT — see `LICENSE`.
->>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
+- A **2-for-1 family discount** is available on commercial licenses covering both `sap-bdc-mcp` and `SAPDatasphereMCP`.
 
 ---
 
@@ -533,7 +530,7 @@ v0.2.0 turns sap-bdc-mcp from a contract-first discovery server (v0.1) into a **
 
 ### What's new — tool surface
 
-8 new MCP tools land at v0.2 on top of the 12 from v0.1:
+13 new MCP tools land at v0.2 on top of the 12 from v0.1 (25 total):
 
 | Tool | Category | Mutability | Risk | Notes |
 |---|---|---|---|---|

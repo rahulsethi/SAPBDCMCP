@@ -1,9 +1,5 @@
 # File: pyproject.toml
-<<<<<<< HEAD
 # Version: v6
-=======
-# Version: v5
->>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
 
 [project]
 name = "sap-bdc-mcp"
@@ -11,9 +7,11 @@ version = "0.2.0"
 description = "Model Context Protocol (MCP) server for SAP Business Data Cloud (BDC): contract-first, safe-by-default tooling for AI agents."
 readme = "README.md"
 requires-python = ">=3.11"
-# v0.2.0 relicensed from MIT to PolyForm Noncommercial 1.0.0.
-# Commercial use requires a separate license — see docs_public/COMMERCIAL_LICENSING.md.
-license = { text = "PolyForm Noncommercial License 1.0.0" }
+# v0.2.0 relicensed from MIT to the Business Source License 1.1 (BSL 1.1) —
+# the same license as the sibling SAPDatasphereMCP. Converts to Apache 2.0 on
+# 2029-01-01. Commercial use requires a separate license — see
+# docs_public/COMMERCIAL_LICENSING.md.
+license = { text = "Business Source License 1.1" }
 
 authors = [
   { name = "Rahul Sethi" }

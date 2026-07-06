@@ -11,20 +11,16 @@
     "ord",
     "csn"
   ],
-  "homepage": "https://github.com/rahulsethi/sap-bdc-mcp",
+  "homepage": "https://github.com/rahulsethi/SAPBDCMCP",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rahulsethi/sap-bdc-mcp.git"
+    "url": "https://github.com/rahulsethi/SAPBDCMCP.git"
   },
   "bugs": {
-    "url": "https://github.com/rahulsethi/sap-bdc-mcp/issues"
+    "url": "https://github.com/rahulsethi/SAPBDCMCP/issues"
   },
   "author": "Rahul Sethi",
-<<<<<<< HEAD
   "license": "SEE LICENSE IN LICENSE",
-=======
-  "license": "MIT",
->>>>>>> 0ed8e4279334917c478c9a14d71904c3ea4c961e
   "bin": {
     "sap-bdc-mcp": "bin/sap-bdc-mcp.js"
   },
