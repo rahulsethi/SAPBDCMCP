@@ -15,7 +15,7 @@ v0.1 was contract-first: read the catalog, validate schemas, plan shares — but
 Three pillars land:
 
 1. **Provider-neutral execution.** A `BDCConnectProvider` interface with two concrete providers:
-   - **Databricks** — full provider with `preflight`, `validate_plan`, `dry_run_execute`, `execute`. Mock mode for development; real mode wires through the SAP BDC Connect SDK.
+   - **Databricks** — full provider surface with `preflight`, `validate_plan`, `dry_run_execute`, `execute`. Mock mode is the exercised path at v0.2; real execution wires through the SAP BDC Connect SDK in v0.3 (real mode currently raises a clear `NotImplementedError` pointing there).
    - **Snowflake** — *readiness-only* at v0.2 (preflight + plan validation). Real Snowflake execution lands in v0.3.
 2. **Policy + audit teeth.** Every tool now carries risk metadata (`mutability`, `risk`, `api_surface`, `api_evidence`, `bulk_data_behavior`). High-risk tools must dry-run first, then supply a constant-time-compared approval token. Every invocation writes a JSONL audit event with sha256-hashed inputs (post-redaction). Inspect via the new `bdc_audit_tail` tool.
 3. **Multi-runtime reach.** `BDC_PLUGINS` now accepts subprocess MCP servers via `npx:`, `uvx:`, or `cmd:` schemes. The Python-only v0.1 plugin path still works. Subprocess plugin tools are distrusted by default — an operator must opt in via `BDC_PLUGIN_TRUST`. Separately, `sap-bdc-mcp` itself can now be launched via `npx -y sap-bdc-mcp@0.2.0` (the Node wrapper bootstraps Python via `uv`).
@@ -76,7 +76,7 @@ Upgrading is `pip install --upgrade sap-bdc-mcp` (or bumping your npx version pi
 
 ## What's *not* in v0.2 (intentionally)
 
-- **Snowflake share execution.** Deferred to v0.3.
+- **Live share execution (Databricks *and* Snowflake).** v0.2 ships the full governance + gate chain against **mock** execution; real provider mutation (Databricks SDK wiring, Snowflake) lands in v0.3.
 - **HTTP / SSE transport.** stdio only at v0.2; HTTP lands in v0.4.
 - **JWT / time-bound approval tokens.** Plain shared-secret + constant-time compare at v0.2; JWT in v0.4.
 - **Audit log rotation.** Manual at v0.2; controls in v0.4.
@@ -99,7 +99,7 @@ Pick one. They run the same Python server underneath. See [`INSTALLATION.md`](IN
 
 ## License + commercial use
 
-This is **not** under a permissive open-source license. Personal, evaluation, and research use is permitted by the [`LICENSE`](../LICENSE) at the repo root. Commercial / enterprise use requires a separate agreement — see [`COMMERCIAL_LICENSING.md`](COMMERCIAL_LICENSING.md).
+`sap-bdc-mcp` v0.2.0 is licensed under the **Business Source License 1.1 (BSL 1.1)** — the same license as its sibling read-only server [SAPDatasphereMCP](https://github.com/rahulsethi/SAPDatasphereMCP). It is **not** a permissive open-source license today, but it **converts automatically to Apache 2.0 on 2029-01-01**. Personal, evaluation, research, academic, and internal-evaluation use is free under the [`LICENSE`](../LICENSE) at the repo root; commercial / for-profit use requires a separate agreement — see [`COMMERCIAL_LICENSING.md`](COMMERCIAL_LICENSING.md) (a 2-for-1 discount covers both family servers). *(v0.1.0 remains MIT for code already in use.)*
 
 ## SAP API policy
 
